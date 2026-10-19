@@ -29,3 +29,29 @@ The logger needs to log events witht he correct format. Driver.py also needs to 
 2026-10-18 21:21 [START] Logging Started.
 2026-10-18 21:21 [STOP] Driver stopped.
 I got the output of the logging and driver connected, but it didn't work with the other commands, only quit and starting the file. I originally had line.split() which was only recrding the "Logging" part since I was just taking parts[1]. I changed to maxsplit of 1 to fix this. The log file also was blank when I first tested it because the logger was waiting on an stdin, so f.flush() was needed after each line to fix it. Now the cipher is next to make.
+
+# 10-18-26 9:26 pm Session 5
+Now I have to do the Vigenere cipher for encryptor.py and connect it to driver.py. This will require pipes going in both directions, so stdin and stdout will have subprocess.PIPE. I need to decide whether I handle language syntax within encryptor.py or in driver.py. I think that it makes more sense in encryptor.py since the Driver.py using a subprocess to communicate creates problems with child processes if the encryptor exits. The cipher formula is pretty simple to implement with (ord(char) - ord('A') + shift amount) % 26 + ord('A'). I also need to handle the errors for invlaid input and password not set for encrypt and decrypt.
+
+# 10-18-26 9:40 pm
+I connected the Driver.py UI and pipes with encryptor.py. It was stuck not working on the password command because it had the same buffering issue from the logger I/O. I just copied how logger fixed it. Now I need to edit encryptor.py to input the cipher formula for the input. The shift amount would be key[i % len(key)] for the encryption/decryption formula. The difference between encrypt and decrypt would just be adding vs subtracting the shift.
+
+# 10-18-26 10:07 pm
+$ python encryptor.py
+pass hello
+RESULT
+encrypt hello
+RESULT OIWWC
+decrypt hello
+RESULT AAAAA
+decrypt oiwwc
+RESULT HELLO
+decrypt HELLO
+RESULT AAAAA
+decrypt OIWWC
+RESULT HELLO
+quit
+The encryptor file is working, but it isn't fully connect to the driver yet. 
+
+# 10-18-26 10:28 pm
+The driver is connected to the encryptor and works. I forgot to create the function to connect driver commands to the encryptor.
