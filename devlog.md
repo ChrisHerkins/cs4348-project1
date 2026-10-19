@@ -1,5 +1,0 @@
-# 10-18-26 7:45 pm
-Looking at project description of Project 1 and starter files. I need a logger, encryptor, and driver that connects them with pipes. I need to have the pieces talk to each other. I am thinking that the driver could opent he log file directly and append to it says few moving parts are needed. However, this wouldn't be using pipes properly so I can't use it. I need to have the driver launch logger as a seaparate process to put lines into stdin. Cpu.py launches child process, then holds onto its std file streams, pushes line commands, flushes the stream, and reads for response. I need to iether format messages as serialized JSON strings or whitspace-delmiited tokens. JSON works with structured payloads well, but plain text tokens will work better for parsing issues.
-
-# 10-18-26 8:00 pm
-I initialized the repository into github. I will need logger.py, encryptor.py, and driver.py, so I created the files. I next will need to create the basic input and output for the files. This will be easier to test than pipes without input nor output.
