@@ -9,3 +9,12 @@ The first step is to make a command loop in driver.py for the commands. The inte
 
 # 10-18-26 8:37 pm
 I created the basic driver.py commands for the user to input. It also makes sure that the user runs the file with the log file. I needed to add lowercase and strip so that caps and spaces don't affect the command the user gives. Next, I need to create the I/O loops for logger.py and encryptor.py.
+
+# 10-18-26 8:42 pm Session 3
+I am moving devlog.md into python folder for now since it is easier to commit the files together with git add . instead of writing the devlog.md file every commit. I need to create the I/O for logger.py and encryptor.py. This needs to be set up before the pipes since they are much less complicated. For logger.py, I need to take the log file name from the program calling. It then needs to read from stdin and write them to the file until quit is read. I can do the encryptor.py right now, but it will cause too much bug testing, so I want ot keep it within logger.py for now. I could use sys.stdin.read(), but that doesn't make sense since logger and encryptor are supposed to be long-running processes that read per line rather than all lines. I'll use a simple sys.stdin iteration. I will set it up so that I run logger.py directly instead of calling it from driver.py.
+
+# 10-18-26 8:49 pm
+The quit isn't case sensitive so I need to add that, but also it is successfully writing to the end of log.txt which I used for testing. Now I need to do encryptor.py. I am keeping it separate from the other files for bug testing sake. It is fairly similar to logger.py's code, so it won't be too bad. I will split lines on spaces to extract command and argument, have the program print an acknowledgement for the commands, and give the same error for unknown commands that driver has.
+
+# 10-18-26 9:04 pm
+The encryptor.py file is working with tests. They have the commnd receiving and the quitting working. It recognizes the input as well when taking in commands.

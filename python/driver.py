@@ -12,7 +12,7 @@ def main():
             print("Exiting driver.")
             break
         elif cmd in ["password", "encrypt", "decrypt", "history"]:
-            print(f"Command '{cmd}'.")
+            print(f"Command '{cmd}' received.")
         else:
             print(f"Unknown command '{cmd}'.")
 
