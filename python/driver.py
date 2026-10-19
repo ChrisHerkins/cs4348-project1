@@ -81,7 +81,11 @@ class Driver:
         return val.upper()
 
 
+
 def main():
+    if len(sys.argv) < 2:
+        print("Not a valid logging file. Try again.")
+        sys.exit(1)
     log_file = sys.argv[1]
     driver = Driver(log_file)
 
@@ -90,16 +94,30 @@ def main():
         cmd = input("Enter command: ").strip().lower()
 
         if cmd == "quit":
+            driver.log_event("COMMAND", "quit")
             break
+
         elif cmd == "password":
+            driver.log_event("COMMAND", "password")
             pwd = driver.get_user_string("password")
             if pwd:
                 resp = driver.send_cipher_cmd(f"PASS {pwd}")
                 print("Output: " + resp)
+                if resp.startswith("RESULT"):
+                    # Privacy rule: NEVER log the actual password!
+                    driver.log_event("RESULT", "Password set successfully.")
+                else:
+                    driver.log_event("ERROR", resp)
+            else:
+                driver.log_event("ERROR", "Invalid password input")
+
         elif cmd == "encrypt":
+            driver.log_event("COMMAND", "encrypt")
             text = driver.get_user_string("string to encrypt")
             if text:
+                driver.log_event("INPUT", f"Encrypting: {text}")
                 resp = driver.send_cipher_cmd(f"ENCRYPT {text}")
+                driver.log_event("RESULT", resp)
                 print("Output: " + resp)
                 if resp.startswith("RESULT"):
                     parts = resp.split(" ", 1)
@@ -108,11 +126,17 @@ def main():
                         driver.history.append(text)
                     if cipher_res and cipher_res not in driver.history:
                         driver.history.append(cipher_res)
+            else:
+                driver.log_event("ERROR", "Invalid encryption input string")
+                        
 
         elif cmd == "decrypt":
+            driver.log_event("COMMAND", "decrypt")
             text = driver.get_user_string("string to decrypt")
             if text:
+                driver.log_event("INPUT", f"Decrypting: {text}")
                 resp = driver.send_cipher_cmd(f"DECRYPT {text}")
+                driver.log_event("RESULT", resp)
                 print("Output: " + resp)
                 if resp.startswith("RESULT"):
                     parts = resp.split(" ", 1)
@@ -121,8 +145,11 @@ def main():
                         driver.history.append(text)
                     if plain_res and plain_res not in driver.history:
                         driver.history.append(plain_res)
+            else:
+                driver.log_event("ERROR", "Invalid decryption input string")
 
         elif cmd == "history":
+            driver.log_event("COMMAND", "history")
             print("\n--- Current Session History ---")
             if len(driver.history) == 0:
                 print("(History is empty)")
@@ -130,6 +157,7 @@ def main():
                 for idx, item in enumerate(driver.history, 1):
                     print(f"{idx}. {item}")
             print("-------------------------------")
+            driver.log_event("RESULT", f"Displayed history with {len(driver.history)} items.")
         
         else:
             print(f"Unknown command '{cmd}'.")

@@ -64,3 +64,15 @@ When history was empty and I picked the select from history option, it was crash
 
 # 10-18-26 11:15 pm
 The input is validated to make sure that it is alphabetical characters. The history is running and it does not store passwords, but it stores encrypted and decrypted messages. The use of using a previously used string is working. Next is the logs of all of the commands which should be easy.
+
+# 10-18-26 11:17 pm Session 7
+All that is left is having the commands be logged in the logging text.  This should be pretty easy. I already have a logger set up, so I just need to add driver.log_event() for all of the commands and outputs. I need to make sure that it is being used for botht eh input commands as well as the output results. I need to make sure passwords aren't stored in the logs either.
+
+# 10-18-26 11:25 pm
+The logs are all written in, and I just need to test everything. I need to make sure that passwords are reset on separate runs of the program, I need to make sure that encrypting is correct, and I need to make sure that the logs are all showing. I also need to test for invalid input to see if it breaks.
+
+# 10-18-26 11:35 pm
+I tested for everything and it was all good except how when I run the program without a log file it gives running time errors instead of catching them.
+
+# 10-18-26 11:38 pm
+I fixed the input file error. Now I will just make sure that everything looks good and then it should be done.
