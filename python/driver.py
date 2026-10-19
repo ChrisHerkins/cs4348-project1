@@ -22,6 +22,7 @@ class Driver:
 
         # Log startup per instructions
         self.log_event("START", "Logging Started.")
+        self.history = []
 
     def log_event(self, action, message=""):
         line = f"{action} {message}".strip()
@@ -42,6 +43,42 @@ class Driver:
 
         self.cipher_proc.wait()
         self.logger_proc.wait()
+    def is_valid_letters(self, text):
+        return len(text) > 0 and text.isalpha()
+
+    def get_user_string(self, prompt_label):
+        print(f"\nSelect input source for {prompt_label}:")
+        print("1. Enter a new string")
+        print("2. Choose from history")
+        choice = input("Enter choice (1-2): ").strip()
+
+        if choice == "2":
+            if len(self.history) == 0:
+                print("History is currently empty. Please enter a new string.")
+            else:
+                print("\n--- History ---")
+                for idx, item in enumerate(self.history, 1):
+                    print(f"{idx}. {item}")
+                print("0. Cancel and enter a new string")
+
+                sub_choice = input(f"Select item (0-{len(self.history)}): ").strip()
+                if sub_choice.isdigit():
+                    selected_idx = int(sub_choice)
+                    if 1 <= selected_idx <= len(self.history):
+                        return self.history[selected_idx - 1]
+                    elif selected_idx == 0:
+                        print("Cancelled history selection.")
+                    else:
+                        print("Invalid selection number.")
+                else:
+                    print("Invalid input.")
+
+        # Fallback to entering a new string
+        val = input(f"Enter {prompt_label} (letters only): ").strip()
+        if not self.is_valid_letters(val):
+            print("Error: Input must contain letters only (no spaces, numbers, or symbols).")
+            return None
+        return val.upper()
 
 
 def main():
@@ -55,21 +92,45 @@ def main():
         if cmd == "quit":
             break
         elif cmd == "password":
-            p = input("Input: ").strip()
-            resp = driver.send_cipher_cmd(f"PASS {p}")
-            print("Output: " + resp)
+            pwd = driver.get_user_string("password")
+            if pwd:
+                resp = driver.send_cipher_cmd(f"PASS {pwd}")
+                print("Output: " + resp)
         elif cmd == "encrypt":
-            text = input("Input: ").strip()
-            resp = driver.send_cipher_cmd(f"ENCRYPT {text}")
-            print(resp)
+            text = driver.get_user_string("string to encrypt")
+            if text:
+                resp = driver.send_cipher_cmd(f"ENCRYPT {text}")
+                print("Output: " + resp)
+                if resp.startswith("RESULT"):
+                    parts = resp.split(" ", 1)
+                    cipher_res = parts[1] if len(parts) > 1 else ""
+                    if text not in driver.history:
+                        driver.history.append(text)
+                    if cipher_res and cipher_res not in driver.history:
+                        driver.history.append(cipher_res)
 
         elif cmd == "decrypt":
-            text = input("Input: ").strip()
-            resp = driver.send_cipher_cmd(f"DECRYPT {text}")
-            print("Output: " + resp)
+            text = driver.get_user_string("string to decrypt")
+            if text:
+                resp = driver.send_cipher_cmd(f"DECRYPT {text}")
+                print("Output: " + resp)
+                if resp.startswith("RESULT"):
+                    parts = resp.split(" ", 1)
+                    plain_res = parts[1] if len(parts) > 1 else ""
+                    if text not in driver.history:
+                        driver.history.append(text)
+                    if plain_res and plain_res not in driver.history:
+                        driver.history.append(plain_res)
 
         elif cmd == "history":
-            print("Not yet implemented.")
+            print("\n--- Current Session History ---")
+            if len(driver.history) == 0:
+                print("(History is empty)")
+            else:
+                for idx, item in enumerate(driver.history, 1):
+                    print(f"{idx}. {item}")
+            print("-------------------------------")
+        
         else:
             print(f"Unknown command '{cmd}'.")
 

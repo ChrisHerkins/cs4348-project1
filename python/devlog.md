@@ -37,7 +37,7 @@ Now I have to do the Vigenere cipher for encryptor.py and connect it to driver.p
 I connected the Driver.py UI and pipes with encryptor.py. It was stuck not working on the password command because it had the same buffering issue from the logger I/O. I just copied how logger fixed it. Now I need to edit encryptor.py to input the cipher formula for the input. The shift amount would be key[i % len(key)] for the encryption/decryption formula. The difference between encrypt and decrypt would just be adding vs subtracting the shift.
 
 # 10-18-26 10:07 pm
-$ python encryptor.py
+python encryptor.py
 pass hello
 RESULT
 encrypt hello
@@ -55,3 +55,12 @@ The encryptor file is working, but it isn't fully connect to the driver yet.
 
 # 10-18-26 10:28 pm
 The driver is connected to the encryptor and works. I forgot to create the function to connect driver commands to the encryptor.
+
+# 10-18-26 10:30 pm Session 6
+I need to add the history tracking. The results should save in history and last only for the run. I will use a standard Python list because the list preserves the insertion order and allows for direct index lookups, so it is easy to implement. There isn't any sorting necessary so complicated data structures are unnecessary. The password should not be stored in history as well. The user also needs to be able to choose whether to use a string from history or a new string. The user also needs to be able to exit history. I need to add history,validation of the letters to make sure the isalpha(), create the option UI for string from history vs new.
+
+# 10-18-26 11:10 pm
+When history was empty and I picked the select from history option, it was crashing the program. I had to add the validation checker of history to make sure it wasn't empty.
+
+# 10-18-26 11:15 pm
+The input is validated to make sure that it is alphabetical characters. The history is running and it does not store passwords, but it stores encrypted and decrypted messages. The use of using a previously used string is working. Next is the logs of all of the commands which should be easy.
