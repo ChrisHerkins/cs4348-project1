@@ -18,3 +18,14 @@ The quit isn't case sensitive so I need to add that, but also it is successfully
 
 # 10-18-26 9:04 pm
 The encryptor.py file is working with tests. They have the commnd receiving and the quitting working. It recognizes the input as well when taking in commands.
+
+# 10-18-26 9:08 pm Session 4
+Now I need to connect driver.py to logger.py with a pipe, and have logger.py use the exact required format. The logger needs ot parse the first word as action, put brackets around it, and treat the rest of the line as message. The driver needs to log startup and shutdown as well. I am considering having a new logger process subprocess.run() everytime a log needs to be written. I don't think this could work because it doesn't make sense for feasibility to have a new process for each log line. I could use procedural driver.py with global variables for children, but then it would cause a log more bugs in encryptor.py with process handlers. I could also make a driver class to spawn a logger.py instance. This seems to be the standard so I will go with it. The steps I need are to have the logger.py spawned on __init__. Then it needs to have a self.logger_proc.
+
+# 10-18-26 9:13 pm
+The logger needs to log events witht he correct format. Driver.py also needs to launch logger.py with the file driver.py is run with using Popen. It needs to log the input commands and any other actions taken.
+
+# 10-18-26 9:22 pm
+2026-10-18 21:21 [START] Logging Started.
+2026-10-18 21:21 [STOP] Driver stopped.
+I got the output of the logging and driver connected, but it didn't work with the other commands, only quit and starting the file. I originally had line.split() which was only recrding the "Logging" part since I was just taking parts[1]. I changed to maxsplit of 1 to fix this. The log file also was blank when I first tested it because the logger was waiting on an stdin, so f.flush() was needed after each line to fix it. Now the cipher is next to make.
